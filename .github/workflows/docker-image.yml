@@ -28,9 +28,9 @@ jobs:
         echo "Fin del login"
 
     - name: Build Docker Image y Push
-    	run: |
-      	docker build -t danito90/docker-graphql:0.0.2 --push .
-      	docker build -t danito90/docker-graphql:latest --push .
+      run: |
+        docker build -t danito90/docker-graphql:0.0.2 --push .
+        docker build -t danito90/docker-graphql:latest --push .
        
     # - name: Push Docker Image
     #   run: |
