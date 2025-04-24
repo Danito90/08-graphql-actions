@@ -18,24 +18,47 @@ jobs:
       with:
         fetch-depth: 0
 
+
+    - name: Git semantic version
+      uses: paulhatch/semantic-version@v4.0.2
+      with:
+        # The prefix to use to identify tags
+        tag_prefix: "v"
+        # A string which, if present in a git commit, indicates that a change represents a
+        # major (breaking) change, supports regular expressions wrapped with '/'
+        major_pattern: "major:"  # "(MAJOR)"
+        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+        minor_pattern: "feat:" # "(MINOR)"
+        # A string to determine the format of the version output
+        format: "${major}.${minor}.${patch}-prerelease${increment}"
+        # Optional path to check for changes. If any changes are detected in the path the
+        # 'changed' output will true. Enter multiple paths separated by spaces.
+      id: version
+
+
     - name: Docker login
       env:
         DOCKER_USER: ${{ secrets.DOCKER_USER }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        NEW_VERSION: ${{ steps.version.outputs.version }} # output de git semantic, referenciado con el id
       run: |
         echo "Iniciando login"
         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+        echo "New version: $NEW_VERSION!!!!!"
         echo "Fin del login"
 
-    - name: Build Docker Image y Push
-      run: |
-        docker build -t danito90/docker-graphql:0.0.2 --push .
-        docker build -t danito90/docker-graphql:latest --push .
-       
+    # - name: Build Docker Image y Push
+    #   run: |
+    #     docker build -t danito90/docker-graphql:0.0.2 --push .
+    #     docker build -t danito90/docker-graphql:latest --push .
+        
     # - name: Push Docker Image
     #   run: |
     #     docker push -t danito90/docker-graphql:0.0.2
     #     docker push -t danito90/docker-graphql:latest
+
+
+
+       
+
     
-    # - name: Build the Docker image
-    #   run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
