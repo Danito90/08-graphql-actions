@@ -47,10 +47,12 @@ jobs:
         echo "New version: $NEW_VERSION!!!!!"
         echo "Fin del login"
 
-    # - name: Build Docker Image y Push
-    #   run: |
-    #     docker build -t danito90/docker-graphql:0.0.2 --push .
-    #     docker build -t danito90/docker-graphql:latest --push .
+    - name: Build Docker Image y Push
+      env:
+        NEW_VERSION: ${{ steps.version.outputs.version }} # output de git semantic, referenciado con el id
+      run: |
+        docker build -t danito90/docker-graphql:$NEW_VERSION --push .
+        docker build -t danito90/docker-graphql:latest --push .
         
     # - name: Push Docker Image
     #   run: |
